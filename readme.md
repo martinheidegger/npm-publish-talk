@@ -13,30 +13,34 @@ theme:
 ---
 
 When you write React...
+リアクトを書く時…
 ===
 
 
 <!-- incremental_lists: true -->
 
-- Do you use Node.js?
-  - _Maybe you want to start?_
-- Do you use JavaScript?
-  - _Or TypeScript?_
-- Do you Copy & Paste?
-  - _Maybe you want to stop?_
+- Do you use Node.js? ノード使っていますか？
+  - _Maybe you want to start?_ 使ったらどう？
+- Do you use JavaScript? JS で書いている？
+  - _Or TypeScript?_ または TS?
+- Do you Copy & Paste? コピペー良くある？
+  - _Maybe you want to stop?_ もしかして辞めたら良いかも？
 
 <!-- end_slide -->
 
 Basics
+基本
 ===
 
 - a **_module_** in JavaScript is any file: `index.js`
-  - hint: `.mjs` stands for "module"-js
-  - hint: "ESM" means "EcmaScript Module"
+  「モジュール」はただのＪＳファイルになります。
+  - hint: `.mjs` ... "module"-js
+  - hint: "ESM" ... "EcmaScript Module"
 
 ---
 
-- a **_package_** is a module with extra information
+- a **_package_** is one or more modules with extra information
+  「パッケージ」だとモジュール集めと他のデータをまとめて
   - hint: "package.json"
 
 <!-- end_slide -->
@@ -54,6 +58,8 @@ NPM
 ---
 
 - NPM is a server that stores a lot of packages
+- Owned by Microsoft
+- Biggest code deployment platform
 
 ---
 
@@ -583,3 +589,34 @@ tsconfig*
 server.mjs
 index.html
 ```
+
+<!-- end_slide -->
+
+# Why deploy packages?
+
+- Pride! プライド 💪
+- Independence! 自由のために ⛓️‍💥
+- Collaboration! コラボ練習 🤝
+- Skill-up! スキルアップ 📚
+- Give-back! 恩返し 🙇
+
+<!-- end_slide -->
+
+# More topics
+
+- Testing / テスト
+- TypeScript / タイプスクリプト
+- Maintenance / メンテ
+- Auditing / 監査
+
+<!-- end_slide -->
+
+Thank you very much!
+===
+
+### Questions?
+
+### Slides:
+
+https://github.com/martinheidegger/npm-publish-talk
+
