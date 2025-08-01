@@ -1,0 +1,446 @@
+---
+title: Publishing a React module to npm
+sub_title: Share your code!
+author: Martin Heidegger 👇 https://github.com/martinheidegger/npm-publish-talk
+date: 2025-08-01
+theme:
+  name: terminal-light
+  override:
+    code:
+      theme_name: Solarized (light)
+    footer:
+      style: progress_bar
+---
+
+When you write React...
+===
+
+
+<!-- incremental_lists: true -->
+
+- Do you use Node.js?
+  - _Maybe you want to start?_
+- Do you use JavaScript?
+  - _Or TypeScript?_
+- Do you Copy & Paste?
+  - _Maybe you want to stop?_
+
+<!-- end_slide -->
+
+Basics
+===
+
+- a **_module_** in JavaScript is any file: `index.js`
+  - hint: `.mjs` stands for "module"-js
+  - hint: "ESM" means "EcmaScript Module"
+
+---
+
+- a **_package_** is a module with extra information
+  - hint: "package.json"
+
+<!-- end_slide -->
+
+NPM
+===
+
+
+- node
+- **_package_**
+- manager
+
+<!-- incremental_lists: true -->
+
+---
+
+- NPM is a server that stores a lot of packages
+
+---
+
+<!-- incremental_lists: false -->
+
+- `npm` is a command line tool that comes with Node.js to download the packages
+
+
+<!-- end_slide -->
+
+# NPM
+
+_published with node_
+
+```bash +exec
+npm --version
+```
+
+
+<!-- end_slide -->
+
+# NPM
+
+_getting the latest version_
+
+```bash +exec
+npm i npm@latest -g
+```
+
+<!-- end_slide -->
+
+# React getting started
+
+_from the documentation_
+
+```bash +exec
+npm create \
+  vite@latest \
+  01_where_it_starts \
+  -- --template react
+```
+
+<!-- end_slide -->
+
+# No installation?
+
+```bash +exec
+cd 01_where_it_starts  
+
+# skip...                      
+# npm install
+
+npm run dev
+```
+
+<!-- end_slide -->
+
+# Fake vite
+
+```bash +exec
+cd 01_where_it_starts
+
+# 1. create folder
+mkdir -p node_modules/.bin
+
+# 2. create fake vite command
+<<VITE cat > node_modules/.bin/vite
+#!/bin/bash
+echo "fake vite"
+VITE
+
+# 3. make it executable
+chmod +x node_modules/.bin/vite
+
+# 4. show
+find node_modules
+
+# 5. try again
+npm run dev
+```
+
+<!-- end_slide -->
+
+# Real vite
+
+```bash +exec
+cd 01_where_it_starts
+
+# 1. cleanup
+rm -rf node_modules
+
+# 2. install default dependencies
+npm i
+```
+
+<!-- end_slide -->
+
+# Mini Component
+
+```file {9,11,18-21,28-34}
+path: patch/01_my_component
+language: diff
+```
+
+<!-- end_slide -->
+
+# Apply that diff
+
+```bash +exec
+cd 01_where_it_starts
+
+# Let's add that component
+patch -p1 < ../patch/01_my_component
+```
+
+<!-- end_slide -->
+
+# Extract to file
+
+```file {6,10,16-23,25,28-40}
+path: patch/02_component_file
+language: diff
+```
+
+<!-- end_slide -->
+
+# Apply...
+
+```bash +exec
+cd 01_where_it_starts
+
+# Let's add that component
+patch -p1 < ../patch/02_component_file
+```
+
+<!-- end_slide -->
+
+# Our first package!
+
+```file
+path: patch/03_move_to_pkg
+language: diff
+```
+
+---
+
+```bash +exec
+cd 01_where_it_starts
+
+# 1. create a my-package ... package
+mkdir node_modules/my-package
+
+# 2. move the component in there
+mv src/MyComponent.jsx node_modules/my-package
+
+# 3. create the smallest package.json
+echo '{ "module": "MyComponent.jsx" }' \
+  > node_modules/my-package/package.json
+
+# 4. apply the patch
+patch -p1 < ../patch/03_move_to_pkg
+```
+
+<!-- end_slide -->
+
+# out of `node_modules`
+
+```bash +exec
+# move into own folder
+mv 01_where_it_starts/node_modules/my-package \
+   02_my-package
+
+cd 02_my-package
+
+# add a name
+npm pkg set name=my-package
+
+# install it in the first folder 🤯
+cd ../01_where_it_starts
+
+npm i ../02_my-package
+```
+
+<!-- end_slide -->
+
+# Quick Setup
+
+```bash +exec
+cd 02_my-package
+
+# 1. Readme for .description
+<<_ cat > readme.md
+# MyComponent
+
+Small and sweet
+_
+
+# 2. initialize npm
+npm init -y \
+  --init-version 0.0.0 \
+  --init-author-name "Martin Heidegger" \
+  --init-author-url "https://leichtgewicht.at" \
+  --init-type module
+
+# 3. Add license
+npx license MIT
+
+# 4. react as a peer dependency
+npm i 'react@>=18' --save-peer
+
+# 5. include a linter
+npm add -D prettier
+npm pkg set "scripts.lint=prettier -c ."
+npm pkg set "scripts.format=prettier -w ."
+npm run format
+
+# 6. add version control
+<<_ cat > .gitignore
+node_modules
+package-lock.json
+.tgz
+_
+
+git init && git add . && git commit -m "init"
+```
+
+<!-- end_slide -->
+
+# Simple publish
+
+```bash +exec
+cd 02_my-package
+
+npm pack
+```
+
+<!-- end_slide -->
+
+# Simple install
+
+```bash +exec
+cd 01_where_it_starts
+
+# Remove the currently linked package
+npm r my-package
+
+# Install from .tgz file
+npm i ../02_my-package/my-package-0.0.0.tgz
+```
+
+<!-- end_slide -->
+
+# Publish options
+
+### USB drive
+
+`npm i /Volumes/stick/my-package-0.0.0.tgz`
+
+### Web Server
+
+`npm i http://mydomain.com/my-package-0.0.0.tgz`
+
+### Git Repository
+
+`npm i git+https://github.com/martinheidegger/my-package.git`
+
+`npm i github:martinheidegger/my-package`
+
+### NPM
+
+`npm i my-package`
+
+<!-- end_slide -->
+
+# Publish to NPM
+
+<!-- incremental_lists: true -->
+
+- You need an account: https://npmjs.com
+　　　アカウントが必須
+- NPM hosts your package (no cost)
+    無料のパッケージホスティング
+- NPM may block you from publishing 😈
+    パブリッシュブロック可能
+- NPM may remove your versions 🦠
+    自動バーション削除可能
+- NPM may block you from deleting 🥇
+    削除ブロック可能あり
+
+<!-- end_slide -->
+
+# Publish to NPM
+
+```bash +exec
+cd 02_my-package
+# Already logged in (skipping): npm login
+npm publish
+```
+
+<!-- end_slide -->
+
+# Detour: Use private!
+
+```bash +exec
+cd 02_my-package
+
+npm pkg set private=true --json
+```
+
+<!-- end_slide -->
+
+# React: .jsx -> js
+
+```file
+path: patch/04_end_jsx_to_js
+language: diff
+```
+
+```bash +exec
+cd 02_my-package
+
+patch -p1 < ../patch/04_end_jsx_to_js
+```
+
+<!-- end_slide -->
+
+# React: .jsx -> js
+
+```file
+path: patch/05_jsx_to_js
+language: diff
+```
+
+```bash +exec
+cd 02_my-package
+
+patch -p1 < ../patch/05_jsx_to_js
+```
+
+<!-- end_slide -->
+
+# React: peer dependency
+
+```bash +exec
+cd 02_my-package
+
+npm i --save-peer 'react@>=18'
+```
+
+- 
+
+<!-- end_slide -->
+
+# Detour: License
+
+- `MIT` … very open!
+- `MPL` … some limitations.
+- `GPL` … fork same license required!
+- `UNLICENSED` … private!
+
+more: https://bit.ly/4l7TKD2
+
+詳しく → http://bit.ly/4mlpIfZ
+
+<!-- end_slide -->
+
+# Detour: Semver
+
+Example: `1.1.1`
+
+`<major>.<minor>.<patch>`
+
+- `major` … If a dependent code might break
+  利用するライブラリーが壊れる可能
+- `minor` … Feature added to code that might help
+  新しいフィーチャー追加になったとき　※
+- `patch` … Code fix.
+  コード出征だけ　※²
+
+---
+
+※ Its okay-ish if a dependent breaks because of a bug. 被扶養者関がバグの問題で動かなくなるなら修正だと私ならだともしかしてオケ。
+
+※² Its okay-ish if a dependent breaks because of a security bug. 被扶養者はセキュリティーの問題で動かなくなるならもしかしてオケ。
+
+<!-- end_slide -->
+
+# React: ssr
+
+

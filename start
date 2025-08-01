@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# To start this presentation you need presenterm:
+#
+# https://mfontanini.github.io/presenterm
+#
+
+set -e
+
+# move .git to temp folder to not interfere
+# with presentation code
+temp_dir=`mktemp -d`
+mv .git "${temp_dir}"
+
+# restore .git folder on exit
+trap "mv '${temp_dir}/.git' ." EXIT
+
+# remove presentation folders
+rm -rf 0*
+
+# start
+presenterm -x readme.md
