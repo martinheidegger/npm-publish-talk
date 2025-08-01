@@ -1,7 +1,7 @@
 ---
 title: Publishing a React module to npm
 sub_title: Share your code!
-author: Martin Heidegger 👇 https://github.com/martinheidegger/npm-publish-talk
+author: Martin Heidegger - https://github.com/martinheidegger/npm-publish-talk
 date: 2025-08-01
 theme:
   name: terminal-light
@@ -363,6 +363,67 @@ cd 02_my-package
 npm pkg set private=true --json
 ```
 
+
+<!-- end_slide -->
+
+# Real-Life
+
+https://martinheidegger.github.io/react-now-Hook
+
+```bash +exec
+git clone https://github.com/martinheidegger/react-now-hook 03_react-now-hook
+```
+
+<!-- end_slide -->
+
+# Github Actions
+
+```bash +exec
+# Added workflows
+cd 03_react-now-hook
+
+# Automation folder!
+ls -1 .github/workflows
+```
+
+<!-- end_slide -->
+
+# Github Actions
+
+_Automatic deployments_
+_自動デプロイ_
+
+```file
+path: 03_react-now-hook/.github/workflows/deploy.yml
+language: yaml
+```
+
+<!-- end_slide -->
+
+# Github Actions
+
+```bash +exec
+cd 03_react-now-hook
+npm version patch
+git push --follow-tags
+```
+
+<!-- end_slide -->
+
+# Github Actions (workflow)
+
+- Do: [Approve Deployment](https://github.com/martinheidegger/react-now-hook/actions/workflows/deploy.yml)
+- Prep: [Setup Environment](https://github.com/martinheidegger/react-now-hook/settings/environments)
+- Prep: [Allow OIDC](https://www.npmjs.com/package/react-now-hook/access)
+
+<!-- end_slide -->
+
+# Github Actions (OIDC)
+
+- No Password!
+- No Token!
+- Control in Github!
+
 <!-- end_slide -->
 
 # React: .jsx -> js
@@ -376,6 +437,7 @@ language: diff
 cd 02_my-package
 
 patch -p1 < ../patch/04_end_jsx_to_js
+mv MyComponent.jsx MyComponent.js
 ```
 
 <!-- end_slide -->
@@ -402,8 +464,6 @@ cd 02_my-package
 
 npm i --save-peer 'react@>=18'
 ```
-
-- 
 
 <!-- end_slide -->
 
@@ -441,6 +501,47 @@ Example: `1.1.1`
 
 <!-- end_slide -->
 
-# React: ssr
+# Detour: cjs/mjs/jsx/ts
 
+- No `.ts` in `.tgz` - fast compile and install!
+- Prefer `"type": "module"` _(or both)_
+- Prefer `.mjs` over `.jsx` - fast, error-free compile!
 
+<!-- end_slide -->
+
+# Detour: `exports default`
+
+```js
+ 🛑
+
+exports default function MyComponent {
+  //...
+}
+```
+
+```js
+import MyComponent from 'my-package'
+```
+
+```js
+ ✅
+
+exports function MyComponent {
+  //...
+}
+```
+
+```js
+import { MyComponent } from 'my-package'
+```
+
+<!-- end_slide -->
+
+# Detour: .npmignore
+
+`my-package_0.0.0.tgz` - 🐘
+
+<!-- ```file
+path: ./03_react-now-hook/.npmignore
+language: ignore
+``` -->
