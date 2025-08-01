@@ -393,9 +393,35 @@ ls -1 .github/workflows
 _Automatic deployments_
 _自動デプロイ_
 
-```file
-path: 03_react-now-hook/.github/workflows/deploy.yml
-language: yaml
+```yaml
+name: Publish Package to npmjs
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: npm-deploy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Update npm
+        run: npm install -g npm@latest
+      - run: npm ci
+      - run: npm publish
 ```
 
 <!-- end_slide -->
@@ -541,7 +567,19 @@ import { MyComponent } from 'my-package'
 
 `my-package_0.0.0.tgz` - 🐘
 
-<!-- ```file
-path: ./03_react-now-hook/.npmignore
-language: ignore
-``` -->
+```ignore
+.github
+.vscode
+dist
+node_modules
+*.ts
+!src/useNow.d.ts
+src/example/*
+*.tsx
+.prettierrc
+.gitingore
+tsconfig*
+*.tgz
+server.mjs
+index.html
+```
